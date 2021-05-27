@@ -35,31 +35,31 @@ class AutoComplete extends Component {
   }
   onInput = (e) => {
     const value = e.target.value;
-    //   let suggestions = [];
-    //   if (value.length > 0){
-    //     const regex = new RegExp(`ˆ${value}`, 'i');
-    //     suggestions = this.state.data.sort().filter(v=>regex.test(v))
-    //     console.log(regex)
-    //   }
-    // this.setState(() => ({suggestions}))
     this.setState({inputValue: value}, ()=> this.renderSuggestions())
   }
 
   renderSuggestions(){
       const {suggestions, data, inputValue} = this.state;
-    //   if(inputValue){
-    //     const match = data.reduce((acc, curVal)=>{
-    //         curVal[]
-    //     }, [])
-    //     this.setState({suggestions: match})
-    //   }
+      if(inputValue){
+        const suggestions = data.reduce((acc, curVal)=>{
+            if(curVal.substr(0, inputValue.length).toLocaleLowerCase()===inputValue.toLocaleLowerCase()){
+              acc.push(curVal)
+            }
+            return acc;
+        }, [])
+        this.setState({suggestions})
+      }else{
+        this.setState({suggestions: []})
+      }
+  }
+
+  selectSuggestion(item){
+    this.setState({inputValue: item, suggestions: []})
   }
   
   render(){
-    const {suggestions, inputValue, data} = this.state;
-    const content = data.map(item => <li>{item}</li>)
-
-
+    const {suggestions, inputValue} = this.state;
+    const content = suggestions.map(item => <li key={item} onClick={()=>this.selectSuggestion(item)}>{item}</li>)
     return (
       <div className="App">
         <div className='wrapper'>
